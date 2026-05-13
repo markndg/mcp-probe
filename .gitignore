@@ -1,0 +1,12 @@
+/target
+**/*.rs.bk
+*.pyc
+__pycache__/
+.python-version
+.venv/
+dist/
+*.egg-info/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/

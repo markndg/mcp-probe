@@ -1,0 +1,21 @@
+[package]
+name = "mcp-test-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Core engine for MCP (Model Context Protocol) server testing"
+
+[lib]
+name = "mcp_test_core"
+
+[[bin]]
+name = "mcp-test-fake-server"
+path = "src/bin/fake_server.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+
+[dev-dependencies]
+serde_json = "1"
