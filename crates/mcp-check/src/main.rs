@@ -2,7 +2,7 @@ mod fuzz;
 
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
-use mcp_test_core::{
+use mcp_check_core::{
     render_junit, render_sarif, run_suite, suite_from_pack, suite_with_server, ConnectOptions,
     ServerSpec, SuiteFile, SuiteOutcome, SuiteResolution,
 };
@@ -13,7 +13,7 @@ use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 #[derive(Parser)]
-#[command(name = "mcp-test", version, about = "Test and validate MCP servers")]
+#[command(name = "mcp-check", version, about = "Test and validate MCP servers")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -183,7 +183,7 @@ fn main() -> Result<()> {
                 &outcome,
                 report.as_deref(),
                 junit.as_deref(),
-                "mcp-test",
+                "mcp-check",
                 sarif.as_deref(),
                 config.to_string_lossy().as_ref(),
             )?;
@@ -227,7 +227,7 @@ fn main() -> Result<()> {
                 &outcome,
                 report.as_deref(),
                 junit.as_deref(),
-                "mcp-test-conformance",
+                "mcp-check-conformance",
                 sarif.as_deref(),
                 "conformance",
             )?;
@@ -266,7 +266,7 @@ fn main() -> Result<()> {
                 &outcome,
                 report.as_deref(),
                 junit.as_deref(),
-                "mcp-test-record",
+                "mcp-check-record",
                 sarif.as_deref(),
                 config.to_string_lossy().as_ref(),
             )?;

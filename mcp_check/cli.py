@@ -4,11 +4,11 @@ import argparse
 import json
 import sys
 
-from mcp_test.runner import run_conformance, run_suite
+from mcp_check.runner import run_conformance, run_suite
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog="mcp-test-py")
+    parser = argparse.ArgumentParser(prog="mcp-check-py")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     run_p = sub.add_parser("run", help="Run a suite JSON file")
@@ -17,9 +17,9 @@ def main() -> None:
     run_p.add_argument("--protocol-version", default=None)
     run_p.add_argument("--junit", default=None, help="Optional JUnit XML output path")
     run_p.add_argument(
-        "--mcp-test-bin",
+        "--mcp-check-bin",
         default=None,
-        help="Explicit path to the `mcp-test` executable",
+        help="Explicit path to the `mcp-check` executable",
     )
 
     conf_p = sub.add_parser("conformance", help="Run built-in conformance pack")
@@ -34,7 +34,7 @@ def main() -> None:
     conf_p.add_argument("--timeout-ms", type=int, default=5000)
     conf_p.add_argument("--protocol-version", default=None)
     conf_p.add_argument("--junit", default=None)
-    conf_p.add_argument("--mcp-test-bin", default=None)
+    conf_p.add_argument("--mcp-check-bin", default=None)
 
     args = parser.parse_args()
     if args.cmd == "run":
@@ -43,7 +43,7 @@ def main() -> None:
             timeout_ms=args.timeout_ms,
             protocol_version=args.protocol_version,
             junit_path=args.junit,
-            mcp_test_bin=args.mcp_test_bin,
+            mcp_check_bin=args.mcp_check_bin,
         )
     elif args.cmd == "conformance":
         result = run_conformance(
@@ -53,7 +53,7 @@ def main() -> None:
             timeout_ms=args.timeout_ms,
             protocol_version=args.protocol_version,
             junit_path=args.junit,
-            mcp_test_bin=args.mcp_test_bin,
+            mcp_check_bin=args.mcp_check_bin,
         )
     else:
         raise AssertionError("unreachable")

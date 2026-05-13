@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use mcp_test_core::{ConnectOptions, McpSession, SuiteFile};
+use mcp_check_core::{ConnectOptions, McpSession, SuiteFile};
 use rand::Rng;
 use serde_json::{json, Value};
 use std::path::Path;

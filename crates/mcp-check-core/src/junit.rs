@@ -25,7 +25,7 @@ pub fn render_junit(suite_name: &str, outcome: &SuiteOutcome) -> String {
     for scenario in &outcome.scenarios {
         let name_esc = xml_escape(&scenario.name);
         out.push_str(&format!(
-            r#"    <testcase classname="mcp_test" name="{name_esc}">"#
+            r#"    <testcase classname="mcp_check" name="{name_esc}">"#
         ));
         out.push('\n');
         if scenario.skipped {

@@ -14,7 +14,7 @@ pub struct ClientInfo {
 impl Default for ClientInfo {
     fn default() -> Self {
         Self {
-            name: "mcp-test".to_string(),
+            name: "mcp-check".to_string(),
             version: env!("CARGO_PKG_VERSION").to_string(),
         }
     }

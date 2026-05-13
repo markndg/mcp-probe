@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         "prompts": {}
                     },
                     "serverInfo": {
-                        "name": "mcp-test-fake-server",
+                        "name": "mcp-check-fake-server",
                         "version": env!("CARGO_PKG_VERSION")
                     }
                 });

@@ -1,10 +1,10 @@
-use mcp_test_core::{run_suite, ConnectOptions, SuiteFile, SuiteResolution};
+use mcp_check_core::{run_suite, ConnectOptions, SuiteFile, SuiteResolution};
 use std::time::Duration;
 
 #[test]
 fn fake_server_tools_list_passes() {
-    let exe = std::env::var_os("CARGO_BIN_EXE_mcp-test-fake-server")
-        .expect("cargo should set CARGO_BIN_EXE_mcp-test-fake-server for integration tests");
+    let exe = std::env::var_os("CARGO_BIN_EXE_mcp-check-fake-server")
+        .expect("cargo should set CARGO_BIN_EXE_mcp-check-fake-server for integration tests");
     let suite_json = serde_json::json!({
         "version": 1,
         "server": {
@@ -30,8 +30,8 @@ fn fake_server_tools_list_passes() {
 
 #[test]
 fn fake_server_subset_mismatch_fails() {
-    let exe = std::env::var_os("CARGO_BIN_EXE_mcp-test-fake-server")
-        .expect("cargo should set CARGO_BIN_EXE_mcp-test-fake-server for integration tests");
+    let exe = std::env::var_os("CARGO_BIN_EXE_mcp-check-fake-server")
+        .expect("cargo should set CARGO_BIN_EXE_mcp-check-fake-server for integration tests");
     let suite_json = serde_json::json!({
         "version": 1,
         "server": {

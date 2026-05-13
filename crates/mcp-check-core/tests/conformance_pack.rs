@@ -1,10 +1,10 @@
-use mcp_test_core::{run_suite, suite_with_server, ConnectOptions, ServerSpec, SuiteResolution};
+use mcp_check_core::{run_suite, suite_with_server, ConnectOptions, ServerSpec, SuiteResolution};
 use std::time::Duration;
 
 #[test]
 fn conformance_pack_passes_on_fake_stdio_server() {
-    let exe = std::env::var_os("CARGO_BIN_EXE_mcp-test-fake-server")
-        .expect("cargo should set CARGO_BIN_EXE_mcp-test-fake-server for integration tests");
+    let exe = std::env::var_os("CARGO_BIN_EXE_mcp-check-fake-server")
+        .expect("cargo should set CARGO_BIN_EXE_mcp-check-fake-server for integration tests");
     let server = ServerSpec {
         http: None,
         command: exe.to_string_lossy().into_owned(),

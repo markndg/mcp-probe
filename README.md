@@ -1,8 +1,8 @@
-# mcp-test
+# mcp-check
 
 **Contract testing and conformance checks for [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) servers.**
 
-MCP is becoming the default way to connect agents to tools—but most teams still validate servers by hand: click through a client, eyeball JSON, and hope production traffic looks the same. **mcp-test** turns that into something you can run in CI: spawn your server, complete a real MCP session over **stdio**, assert on structured responses, optionally enforce **JSON Schema**, and ship reports your pipeline already understands (**JSON + JUnit**).
+MCP is becoming the default way to connect agents to tools—but most teams still validate servers by hand: click through a client, eyeball JSON, and hope production traffic looks the same. **mcp-check** turns that into something you can run in CI: spawn your server, complete a real MCP session over **stdio**, assert on structured responses, optionally enforce **JSON Schema**, and ship reports your pipeline already understands (**JSON + JUnit**).
 
 If you ship an MCP server, this is the kind of harness that catches regressions *before* a user’s agent does.
 
@@ -14,7 +14,7 @@ If you ship an MCP server, this is the kind of harness that catches regressions 
 - **There is no shared conformance suite** most teams run against—everyone reinvents smoke tests.
 - **CI wants artifacts**: machine-readable results, stable exit codes, and reports that integrate with GitHub Actions, Jenkins, GitLab, etc.
 
-**mcp-test** is a small, opinionated runner focused on *repeatable* black-box validation: declarative suites in JSON, a Rust core for speed and safety, and a thin Python façade for teams that orchestrate everything in pytest.
+**mcp-check** is a small, opinionated runner focused on *repeatable* black-box validation: declarative suites in JSON, a Rust core for speed and safety, and a thin Python façade for teams that orchestrate everything in pytest.
 
 ---
 
@@ -28,13 +28,13 @@ If you ship an MCP server, this is the kind of harness that catches regressions 
 | **Declarative suites** | JSON files with `server`, `scenarios`, and `steps` (`send` + `expect`). |
 | **Subset matching** | Deep object subset + order-independent array matching for flexible assertions on `result`. |
 | **JSON Schema (v2)** | Inline `result_schema` and/or on-disk `result_schema_path` (relative to the suite file). |
-| **Starter conformance pack** | `mcp-test conformance` runs schema-backed checks for `tools/list`, `resources/list`, and `prompts/list`. |
+| **Starter conformance pack** | `mcp-check conformance` runs schema-backed checks for `tools/list`, `resources/list`, and `prompts/list`. |
 | **JUnit + JSON reports** | `--junit` for CI dashboards; `--report` for a JSON copy; human-readable summary on stdout. |
 | **Protocol version flag** | `--protocol-version` passed through `initialize` (default `2024-11-05`). |
 | **Rust library** | Embed `run_suite`, `McpStdioSession`, matchers, and JUnit rendering in your own tooling. |
 | **Python wrapper** | Subprocess bridge around the CLI—stdlib only at runtime. |
 
-**Non-goals (today):** Streamable HTTP / SSE, server-initiated client requests, or a full formal verification of every MCP edge case. Experimental JSON-RPC-over-HTTP exists for local bring-up, but it is not yet parity-tested like stdio. The `mcp-test fuzz` command is a **crash smoke** tool (randomised params and methods on a fixed suite step), not protocol-aware framing fuzzing. The project is intentionally narrow so it stays fast to adopt and hard to misuse.
+**Non-goals (today):** Streamable HTTP / SSE, server-initiated client requests, or a full formal verification of every MCP edge case. Experimental JSON-RPC-over-HTTP exists for local bring-up, but it is not yet parity-tested like stdio. The `mcp-check fuzz` command is a **crash smoke** tool (randomised params and methods on a fixed suite step), not protocol-aware framing fuzzing. The project is intentionally narrow so it stays fast to adopt and hard to misuse.
 
 ---
 
@@ -48,7 +48,7 @@ From a checkout of this repository:
 cargo build --release
 ```
 
-Add `target/release` to your `PATH` (or invoke `target/release/mcp-test` by absolute path in CI).
+Add `target/release` to your `PATH` (or invoke `target/release/mcp-check` by absolute path in CI).
 
 ### Python (optional)
 
@@ -56,7 +56,7 @@ Add `target/release` to your `PATH` (or invoke `target/release/mcp-test` by abso
 pip install -e .
 ```
 
-This installs the `mcp-test-py` helper, which shells out to the `mcp-test` binary—**build the Rust CLI first** and ensure it is on `PATH`, or pass an explicit binary path in code.
+This installs the `mcp-check-py` helper, which shells out to the `mcp-check` binary—**build the Rust CLI first** and ensure it is on `PATH`, or pass an explicit binary path in code.
 
 ---
 
@@ -67,7 +67,7 @@ This installs the `mcp-test-py` helper, which shells out to the `mcp-test` binar
 Point at *your* MCP server executable (stdio). Extra arguments use repeatable `--server-arg`:
 
 ```bash
-mcp-test conformance \
+mcp-check conformance \
   --command npx \
   --server-arg -y \
   --server-arg @modelcontextprotocol/server-memory \
@@ -80,7 +80,7 @@ Exit code **0** means every scenario passed; **1** means at least one failure (C
 ### 2) Run your own suite
 
 ```bash
-mcp-test run \
+mcp-check run \
   --config ./suites/production-smoke.json \
   --report target/mcp-report.json \
   --junit target/mcp-junit.xml \
@@ -152,7 +152,7 @@ Powered by the [`jsonschema`](https://docs.rs/jsonschema) crate with **default f
 
 ## CLI reference
 
-### `mcp-test run`
+### `mcp-check run`
 
 | Flag | Meaning |
 |------|---------|
@@ -162,7 +162,7 @@ Powered by the [`jsonschema`](https://docs.rs/jsonschema) crate with **default f
 | `--report PATH` | Optional JSON report (pretty-printed). |
 | `--junit PATH` | Optional JUnit XML report. |
 
-### `mcp-test conformance`
+### `mcp-check conformance`
 
 Runs the embedded starter pack (schema checks on list endpoints).
 
@@ -179,7 +179,7 @@ Runs the embedded starter pack (schema checks on list endpoints).
 
 ```python
 from pathlib import Path
-from mcp_test.runner import run_suite, run_conformance
+from mcp_check.runner import run_suite, run_conformance
 
 # Custom suite
 r = run_suite(
@@ -201,17 +201,17 @@ r = run_conformance(
 Console helper:
 
 ```bash
-mcp-test-py run --config suites/smoke.json --junit out/junit.xml
-mcp-test-py conformance --command ./my-server --server-arg --config ./config.toml
+mcp-check-py run --config suites/smoke.json --junit out/junit.xml
+mcp-check-py conformance --command ./my-server --server-arg --config ./config.toml
 ```
 
 ---
 
 ## Architecture (high level)
 
-- **`mcp-test-core`** — MCP stdio session (`McpStdioSession`), experimental HTTP POST session (`McpHttpSession`), handshake, JSON-RPC `call`, subset matcher, optional JSON Schema validation, suite model, conformance definitions, JUnit rendering, `run_suite` / `run_scenario`.
-- **`mcp-test`** — `clap` CLI (`run`, `conformance`) and filesystem glue for reports.
-- **`mcp_test` (Python)** — Typed subprocess wrapper; no heavy native bindings yet.
+- **`mcp-check-core`** — MCP stdio session (`McpStdioSession`), experimental HTTP POST session (`McpHttpSession`), handshake, JSON-RPC `call`, subset matcher, optional JSON Schema validation, suite model, conformance definitions, JUnit rendering, `run_suite` / `run_scenario`.
+- **`mcp-check`** — `clap` CLI (`run`, `conformance`) and filesystem glue for reports.
+- **`mcp_check` (Python)** — Typed subprocess wrapper; no heavy native bindings yet.
 
 Each **scenario** currently gets a **fresh server process** and handshake for isolation. That trades speed for determinism—ideal for CI, easy to relax later if you add a “shared session” mode.
 
@@ -266,4 +266,4 @@ Issues and PRs welcome—especially:
 - **transport** backends,
 - and **real-world suite examples** (redacted) that stress edge cases.
 
-If you want this project to become the *de facto* MCP CI gate, the fastest path is dogfooding: run `mcp-test conformance` against every server you maintain, and open issues for anything the harness should catch but does not.
+If you want this project to become the *de facto* MCP CI gate, the fastest path is dogfooding: run `mcp-check conformance` against every server you maintain, and open issues for anything the harness should catch but does not.

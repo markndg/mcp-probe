@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/mcp-test-core", "crates/mcp-test"]
+members = ["crates/mcp-check-core", "crates/mcp-check"]
 
 [workspace.package]
 version = "0.1.0"

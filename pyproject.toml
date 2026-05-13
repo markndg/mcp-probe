@@ -3,13 +3,13 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mcp-test"
+name = "mcp-check"
 version = "0.1.0"
-description = "Python wrapper around the mcp-test CLI for MCP server validation"
+description = "Python wrapper around the mcp-check CLI for MCP server validation"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "mcp-test contributors" }]
+authors = [{ name = "mcp-check contributors" }]
 keywords = [
     "mcp",
     "model-context-protocol",
@@ -23,10 +23,10 @@ keywords = [
 dev = ["pytest>=7", "mypy>=1", "ruff>=0.4"]
 
 [project.entry-points.pytest11]
-mcp_test = "mcp_test.pytest_plugin"
+mcp_check = "mcp_check.pytest_plugin"
 
 [project.scripts]
-mcp-test-py = "mcp_test.cli:main"
+mcp-check-py = "mcp_check.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["mcp_test*"]
+include = ["mcp_check*"]

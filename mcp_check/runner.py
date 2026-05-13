@@ -19,13 +19,13 @@ class RunResult:
     returncode: int
 
 
-def default_mcp_test_binary() -> str:
-    exe = shutil.which("mcp-test")
+def default_mcp_check_binary() -> str:
+    exe = shutil.which("mcp-check")
     if exe:
         return exe
     raise FileNotFoundError(
-        "Could not find `mcp-test` on PATH. Build the Rust workspace and add "
-        "`target/release` (or `target/debug`) to PATH, or pass `mcp_test_bin=` explicitly."
+        "Could not find `mcp-check` on PATH. Build the Rust workspace and add "
+        "`target/release` (or `target/debug`) to PATH, or pass `mcp_check_bin=` explicitly."
     )
 
 
@@ -38,10 +38,10 @@ def run_suite(
     sarif_path: str | Path | None = None,
     trace_file: str | Path | None = None,
     client_reply_file: str | Path | None = None,
-    mcp_test_bin: str | None = None,
+    mcp_check_bin: str | None = None,
 ) -> RunResult:
-    """Execute `mcp-test run` and parse the JSON report printed to stdout."""
-    bin_path = mcp_test_bin or default_mcp_test_binary()
+    """Execute `mcp-check run` and parse the JSON report printed to stdout."""
+    bin_path = mcp_check_bin or default_mcp_check_binary()
     config_path = Path(config_path)
     cmd: list[str] = [
         bin_path,
@@ -66,7 +66,7 @@ def run_suite(
         report = json.loads(proc.stdout)
     except json.JSONDecodeError as exc:
         raise RuntimeError(
-            "mcp-test did not emit valid JSON on stdout.\n"
+            "mcp-check did not emit valid JSON on stdout.\n"
             f"stdout:\n{proc.stdout}\n"
             f"stderr:\n{proc.stderr}\n"
         ) from exc
@@ -94,10 +94,10 @@ def run_conformance(
     trace_file: str | Path | None = None,
     client_reply_file: str | Path | None = None,
     pack: str = "builtin",
-    mcp_test_bin: str | None = None,
+    mcp_check_bin: str | None = None,
 ) -> RunResult:
-    """Execute `mcp-test conformance` against a server command."""
-    bin_path = mcp_test_bin or default_mcp_test_binary()
+    """Execute `mcp-check conformance` against a server command."""
+    bin_path = mcp_check_bin or default_mcp_check_binary()
     cmd: list[str] = [bin_path, "conformance", "--command", command, "--timeout-ms", str(timeout_ms)]
     for arg in server_args or []:
         cmd.extend(["--server-arg", arg])
@@ -119,7 +119,7 @@ def run_conformance(
         report = json.loads(proc.stdout)
     except json.JSONDecodeError as exc:
         raise RuntimeError(
-            "mcp-test did not emit valid JSON on stdout.\n"
+            "mcp-check did not emit valid JSON on stdout.\n"
             f"stdout:\n{proc.stdout}\n"
             f"stderr:\n{proc.stderr}\n"
         ) from exc
@@ -141,10 +141,10 @@ def run_fuzz(
     iterations: int = 50,
     timeout_ms: int = 2000,
     protocol_version: str | None = None,
-    mcp_test_bin: str | None = None,
+    mcp_check_bin: str | None = None,
 ) -> RunResult:
-    """Execute `mcp-test fuzz` against the first step of the first scenario in a suite."""
-    bin_path = mcp_test_bin or default_mcp_test_binary()
+    """Execute `mcp-check fuzz` against the first step of the first scenario in a suite."""
+    bin_path = mcp_check_bin or default_mcp_check_binary()
     cmd: list[str] = [
         bin_path,
         "fuzz",

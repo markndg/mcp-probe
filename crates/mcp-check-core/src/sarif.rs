@@ -74,7 +74,7 @@ pub fn render_sarif(suite_name: &str, outcome: &SuiteOutcome) -> String {
             .as_deref()
             .unwrap_or("scenario failed without message");
         results.push(SarifResult {
-            rule_id: "mcp-test/scenario-failed",
+            rule_id: "mcp-check/scenario-failed",
             level: "error",
             message: SarifMessage { text: msg },
             locations: Some(vec![SarifLocation {
@@ -91,7 +91,7 @@ pub fn render_sarif(suite_name: &str, outcome: &SuiteOutcome) -> String {
         runs: vec![SarifRun {
             tool: SarifTool {
                 driver: SarifDriver {
-                    name: "mcp-test",
+                    name: "mcp-check",
                     semantic_version: env!("CARGO_PKG_VERSION"),
                     information_uri: "https://modelcontextprotocol.io/",
                 },

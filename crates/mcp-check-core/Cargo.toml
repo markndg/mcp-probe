@@ -1,15 +1,15 @@
 [package]
-name = "mcp-test-core"
+name = "mcp-check-core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "Core engine for MCP (Model Context Protocol) server testing"
 
 [lib]
-name = "mcp_test_core"
+name = "mcp_check_core"
 
 [[bin]]
-name = "mcp-test-fake-server"
+name = "mcp-check-fake-server"
 path = "src/bin/fake_server.rs"
 
 [dependencies]

@@ -703,12 +703,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "mcp-test"
+name = "mcp-check"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
- "mcp-test-core",
+ "mcp-check-core",
  "rand 0.8.6",
  "serde",
  "serde_json",
@@ -717,7 +717,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mcp-test-core"
+name = "mcp-check-core"
 version = "0.1.0"
 dependencies = [
  "jsonschema",
