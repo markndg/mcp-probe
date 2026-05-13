@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, "feat/**"]
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: fmt
+        run: cargo fmt --all -- --check
+      - name: clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: test
+        run: cargo test
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
+      - name: build mcp-test CLI
+        run: cargo build -p mcp-test
+      - name: pip install python package
+        run: pip install -e .
+      - name: ruff (optional)
+        run: pip install ruff && ruff check mcp_test || true

@@ -1,0 +1,60 @@
+[
+  {
+    "name": "pack:tools_list",
+    "steps": [
+      {
+        "send": { "method": "tools/list", "params": {} },
+        "expect": {
+          "result_schema": {
+            "type": "object",
+            "required": ["tools"],
+            "properties": {
+              "tools": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "inputSchema"],
+                  "properties": {
+                    "name": { "type": "string", "minLength": 1 },
+                    "description": { "type": "string" },
+                    "inputSchema": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "pack:resources_list",
+    "steps": [
+      {
+        "send": { "method": "resources/list", "params": {} },
+        "expect": {
+          "result_schema": {
+            "type": "object",
+            "required": ["resources"],
+            "properties": { "resources": { "type": "array" } }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "pack:prompts_list",
+    "steps": [
+      {
+        "send": { "method": "prompts/list", "params": {} },
+        "expect": {
+          "result_schema": {
+            "type": "object",
+            "required": ["prompts"],
+            "properties": { "prompts": { "type": "array" } }
+          }
+        }
+      }
+    ]
+  }
+]

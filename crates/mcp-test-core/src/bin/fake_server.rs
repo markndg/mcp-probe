@@ -1,6 +1,7 @@
 //! Minimal MCP stdio server used by integration tests and local experiments.
 //!
-//! Supports `initialize`, `notifications/initialized`, and `tools/list`.
+//! Supports `initialize`, `notifications/initialized`, `tools/list`,
+//! `resources/list`, and `prompts/list`.
 
 use serde_json::{json, Value};
 use std::io::{BufRead, Write};
@@ -66,6 +67,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         "inputSchema": { "type": "object", "properties": {} }
                     }]
                 });
+                let resp = json!({ "jsonrpc": "2.0", "id": id, "result": result });
+                writeln!(out, "{}", serde_json::to_string(&resp)?)?;
+                out.flush()?;
+            }
+            "resources/list" => {
+                let result = json!({ "resources": [] });
+                let resp = json!({ "jsonrpc": "2.0", "id": id, "result": result });
+                writeln!(out, "{}", serde_json::to_string(&resp)?)?;
+                out.flush()?;
+            }
+            "prompts/list" => {
+                let result = json!({ "prompts": [] });
                 let resp = json!({ "jsonrpc": "2.0", "id": id, "result": result });
                 writeln!(out, "{}", serde_json::to_string(&resp)?)?;
                 out.flush()?;

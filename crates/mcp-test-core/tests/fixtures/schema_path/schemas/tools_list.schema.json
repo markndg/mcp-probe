@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "required": ["tools"],
+  "properties": {
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "inputSchema"],
+        "properties": {
+          "name": { "type": "string" },
+          "inputSchema": { "type": "object" }
+        }
+      }
+    }
+  }
+}

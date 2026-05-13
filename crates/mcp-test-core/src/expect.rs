@@ -24,17 +24,43 @@ impl MatchFailure {
     }
 }
 
+/// Deep equality for JSON values (strict matching).
+pub fn strict_equal(expected: &Value, actual: &Value) -> Result<(), MatchFailure> {
+    if expected == actual {
+        Ok(())
+    } else {
+        Err(MatchFailure::new(
+            "$",
+            format!("expected {expected}, got {actual}"),
+        ))
+    }
+}
+
 /// Returns `Ok(())` when `actual` contains `expected` using object subset rules.
 ///
 /// - Objects: every key in `expected` must exist in `actual` with recursively matching values.
 /// - Arrays: each element of `expected` must match at least one unused element of `actual`
-///   using the same subset rules (order-independent).
+///   using the same subset rules (order-independent), unless `ordered_arrays` is true.
 /// - Scalars: must be equal (`==`).
 pub fn subset_match(expected: &Value, actual: &Value) -> Result<(), MatchFailure> {
-    subset_match_at("$", expected, actual)
+    subset_match_with_options(expected, actual, false)
 }
 
-fn subset_match_at(path: &str, expected: &Value, actual: &Value) -> Result<(), MatchFailure> {
+/// Same as [`subset_match`], but array comparisons can be forced to index-aligned subset matching.
+pub fn subset_match_with_options(
+    expected: &Value,
+    actual: &Value,
+    ordered_arrays: bool,
+) -> Result<(), MatchFailure> {
+    subset_match_at("$", expected, actual, ordered_arrays)
+}
+
+fn subset_match_at(
+    path: &str,
+    expected: &Value,
+    actual: &Value,
+    ordered_arrays: bool,
+) -> Result<(), MatchFailure> {
     match (expected, actual) {
         (Value::Object(exp_obj), Value::Object(act_obj)) => {
             for (key, exp_val) in exp_obj {
@@ -45,7 +71,24 @@ fn subset_match_at(path: &str, expected: &Value, actual: &Value) -> Result<(), M
                         format!("missing key `{key}` in actual object"),
                     )
                 })?;
-                subset_match_at(&child_path, exp_val, act_val)?;
+                subset_match_at(&child_path, exp_val, act_val, ordered_arrays)?;
+            }
+            Ok(())
+        }
+        (Value::Array(exp_arr), Value::Array(act_arr)) if ordered_arrays => {
+            if exp_arr.len() != act_arr.len() {
+                return Err(MatchFailure::new(
+                    path.to_string(),
+                    format!(
+                        "ordered array length mismatch: expected {} elements, got {}",
+                        exp_arr.len(),
+                        act_arr.len()
+                    ),
+                ));
+            }
+            for (idx, (exp_item, act_item)) in exp_arr.iter().zip(act_arr.iter()).enumerate() {
+                let child_path = format!("{path}[{idx}]");
+                subset_match_at(&child_path, exp_item, act_item, ordered_arrays)?;
             }
             Ok(())
         }
@@ -58,7 +101,7 @@ fn subset_match_at(path: &str, expected: &Value, actual: &Value) -> Result<(), M
                     if used[j] {
                         continue;
                     }
-                    if subset_match_at(&child_path, exp_item, act_item).is_ok() {
+                    if subset_match_at(&child_path, exp_item, act_item, ordered_arrays).is_ok() {
                         used[j] = true;
                         matched = true;
                         break;
@@ -105,5 +148,20 @@ mod tests {
         let exp = json!([{"name": "b"}, {"name": "a"}]);
         let act = json!([{"name": "a", "id": 1}, {"name": "b", "id": 2}]);
         subset_match(&exp, &act).unwrap();
+    }
+
+    #[test]
+    fn ordered_arrays_require_alignment() {
+        let exp = json!([{"k": 1}, {"k": 2}]);
+        let act = json!([{"k": 2}, {"k": 1}]);
+        assert!(subset_match_with_options(&exp, &act, true).is_err());
+        subset_match_with_options(&exp, &act, false).unwrap();
+    }
+
+    #[test]
+    fn strict_equal_checks_exact() {
+        let exp = json!({"a": 1});
+        let act = json!({"a": 1, "b": 2});
+        assert!(strict_equal(&exp, &act).is_err());
     }
 }

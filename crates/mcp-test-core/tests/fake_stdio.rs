@@ -1,4 +1,4 @@
-use mcp_test_core::{run_suite, ConnectOptions, SuiteFile};
+use mcp_test_core::{run_suite, ConnectOptions, SuiteFile, SuiteResolution};
 use std::time::Duration;
 
 #[test]
@@ -24,7 +24,7 @@ fn fake_server_tools_list_passes() {
         response_timeout: Duration::from_secs(2),
         ..ConnectOptions::default()
     };
-    let outcome = run_suite(&suite, &options).expect("run suite");
+    let outcome = run_suite(&suite, &options, &SuiteResolution::default()).expect("run suite");
     assert!(outcome.passed, "{outcome:?}");
 }
 
@@ -51,7 +51,7 @@ fn fake_server_subset_mismatch_fails() {
         response_timeout: Duration::from_secs(2),
         ..ConnectOptions::default()
     };
-    let outcome = run_suite(&suite, &options).expect("run suite");
+    let outcome = run_suite(&suite, &options, &SuiteResolution::default()).expect("run suite");
     assert!(!outcome.passed);
     let err = outcome.scenarios[0].error.as_ref().expect("error");
     assert!(

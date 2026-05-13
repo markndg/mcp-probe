@@ -1,4 +1,5 @@
 use crate::expect::MatchFailure;
+use crate::rpc::RpcError;
 use serde_json::Error as JsonError;
 use std::io;
 use thiserror::Error;
@@ -13,7 +14,7 @@ pub enum CoreError {
     Json(#[from] JsonError),
 
     #[error("json-rpc error: {0}")]
-    Rpc(String),
+    JsonRpc(#[from] RpcError),
 
     #[error("handshake failed: {0}")]
     Handshake(String),
@@ -28,6 +29,39 @@ pub enum CoreError {
         #[source]
         source: MatchFailure,
     },
+
+    #[error("scenario `{scenario}` step {step}: invalid expect configuration: {detail}")]
+    InvalidExpectConfig {
+        scenario: String,
+        step: usize,
+        detail: String,
+    },
+
+    #[error("scenario `{scenario}` step {step}: result JSON Schema mismatch: {message}")]
+    ResultSchemaMismatch {
+        scenario: String,
+        step: usize,
+        message: String,
+    },
+
+    #[error("scenario `{scenario}` step {step}: rpc error expectation failed: {detail}")]
+    RpcExpectationMismatch {
+        scenario: String,
+        step: usize,
+        detail: String,
+    },
+
+    #[error("scenario `{scenario}` step {step}: expected JSON-RPC error but call succeeded")]
+    UnexpectedRpcSuccess { scenario: String, step: usize },
+
+    #[error("http transport error: {0}")]
+    Http(String),
+
+    #[error("blocked potentially unsafe path: {0}")]
+    PathTraversal(String),
+
+    #[error("invalid step: {0}")]
+    InvalidStep(String),
 
     #[error("server subprocess exited unexpectedly: {0:?}")]
     ChildExited(Option<std::process::ExitStatus>),

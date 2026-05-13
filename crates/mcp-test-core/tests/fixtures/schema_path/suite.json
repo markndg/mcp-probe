@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "server": { "command": "PLACEHOLDER", "args": [] },
+  "scenarios": [
+    {
+      "name": "tools list matches on-disk schema",
+      "steps": [
+        {
+          "send": { "method": "tools/list", "params": {} },
+          "expect": { "result_schema_path": "schemas/tools_list.schema.json" }
+        }
+      ]
+    }
+  ]
+}
