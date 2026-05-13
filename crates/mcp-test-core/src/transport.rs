@@ -605,3 +605,33 @@ impl McpSession {
         }
     }
 }
+
+#[cfg(test)]
+mod http_response_tests {
+    use super::McpHttpSession;
+    use crate::error::CoreError;
+    use serde_json::json;
+
+    #[test]
+    fn http_parse_single_response_extracts_result() {
+        let v = json!({"jsonrpc":"2.0","id":1,"result":{"tools":[]}});
+        let out = McpHttpSession::parse_single_response(v).unwrap();
+        assert_eq!(out.unwrap(), json!({"tools":[]}));
+    }
+
+    #[test]
+    fn http_parse_single_response_extracts_error() {
+        let v = json!({"jsonrpc":"2.0","id":1,"error":{"code":-1,"message":"nope"}});
+        let out = McpHttpSession::parse_single_response(v).unwrap();
+        let err = out.unwrap_err();
+        assert_eq!(err.code, -1);
+        assert_eq!(err.message, "nope");
+    }
+
+    #[test]
+    fn http_parse_single_response_rejects_missing_result_and_error() {
+        let v = json!({"jsonrpc":"2.0","id":1});
+        let err = McpHttpSession::parse_single_response(v).unwrap_err();
+        assert!(matches!(err, CoreError::UnexpectedMessage(_)));
+    }
+}

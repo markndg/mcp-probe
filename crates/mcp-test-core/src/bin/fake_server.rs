@@ -45,7 +45,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .unwrap_or_else(|| json!("2024-11-05"));
                 let result = json!({
                     "protocolVersion": negotiated,
-                    "capabilities": { "tools": {} },
+                    "capabilities": {
+                        "tools": {},
+                        "resources": {},
+                        "prompts": {}
+                    },
                     "serverInfo": {
                         "name": "mcp-test-fake-server",
                         "version": env!("CARGO_PKG_VERSION")

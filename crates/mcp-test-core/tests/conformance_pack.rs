@@ -18,5 +18,9 @@ fn conformance_pack_passes_on_fake_stdio_server() {
         ..ConnectOptions::default()
     };
     let outcome = run_suite(&suite, &options, &SuiteResolution::default()).expect("run suite");
+    assert!(
+        !outcome.scenarios.iter().any(|s| s.skipped),
+        "builtin conformance scenarios must run (not capability-skip); got: {outcome:?}"
+    );
     assert!(outcome.passed, "{outcome:?}");
 }

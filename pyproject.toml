@@ -6,7 +6,18 @@ build-backend = "setuptools.build_meta"
 name = "mcp-test"
 version = "0.1.0"
 description = "Python wrapper around the mcp-test CLI for MCP server validation"
+readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "mcp-test contributors" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "testing",
+    "conformance",
+    "pytest",
+    "json-rpc",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=7", "mypy>=1", "ruff>=0.4"]

@@ -1,4 +1,7 @@
 //! Versioned scenario packs shipped with the library (JSON under `resources/packs/`).
+//!
+//! Embedded JSON is loaded via `include_str!` at compile time; every file referenced that way
+//! must remain in the repository (and in the published crate source tarball) or builds break.
 
 use crate::error::CoreError;
 use crate::suite::{Scenario, ServerSpec, SessionMode, SuiteFile};

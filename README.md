@@ -23,6 +23,7 @@ If you ship an MCP server, this is the kind of harness that catches regressions 
 | Capability | Notes |
 |------------|--------|
 | **Stdio transport** | Spawns your server as a subprocess; newline-delimited JSON-RPC as per common MCP stdio practice. |
+| **HTTP (experimental)** | Optional JSON-RPC POST + `Mcp-Session-Id` client for bring-up; stdio remains the primary tested path. |
 | **Real handshake** | Sends `initialize`, validates a sane `initialize` result, then `notifications/initialized`. |
 | **Declarative suites** | JSON files with `server`, `scenarios`, and `steps` (`send` + `expect`). |
 | **Subset matching** | Deep object subset + order-independent array matching for flexible assertions on `result`. |
@@ -33,7 +34,7 @@ If you ship an MCP server, this is the kind of harness that catches regressions 
 | **Rust library** | Embed `run_suite`, `McpStdioSession`, matchers, and JUnit rendering in your own tooling. |
 | **Python wrapper** | Subprocess bridge around the CLI—stdlib only at runtime. |
 
-**Non-goals (today):** remote transports (Streamable HTTP / SSE), server-initiated client requests, fuzzing, or a full formal verification of every MCP edge case. The project is intentionally narrow so it stays fast to adopt and hard to misuse.
+**Non-goals (today):** Streamable HTTP / SSE, server-initiated client requests, or a full formal verification of every MCP edge case. Experimental JSON-RPC-over-HTTP exists for local bring-up, but it is not yet parity-tested like stdio. The `mcp-test fuzz` command is a **crash smoke** tool (randomised params and methods on a fixed suite step), not protocol-aware framing fuzzing. The project is intentionally narrow so it stays fast to adopt and hard to misuse.
 
 ---
 
@@ -208,7 +209,7 @@ mcp-test-py conformance --command ./my-server --server-arg --config ./config.tom
 
 ## Architecture (high level)
 
-- **`mcp-test-core`** — MCP stdio session (`McpStdioSession`), handshake, JSON-RPC `call`, subset matcher, optional JSON Schema validation, suite model, conformance definitions, JUnit rendering, `run_suite` / `run_scenario`.
+- **`mcp-test-core`** — MCP stdio session (`McpStdioSession`), experimental HTTP POST session (`McpHttpSession`), handshake, JSON-RPC `call`, subset matcher, optional JSON Schema validation, suite model, conformance definitions, JUnit rendering, `run_suite` / `run_scenario`.
 - **`mcp-test`** — `clap` CLI (`run`, `conformance`) and filesystem glue for reports.
 - **`mcp_test` (Python)** — Typed subprocess wrapper; no heavy native bindings yet.
 
@@ -238,7 +239,7 @@ Short term, high leverage:
 Medium term:
 
 - **Recording mode** to capture golden transcripts from a working session and shrink them into suites.
-- **Fuzzing / property tests** on framing + parser boundaries (oversized messages, unicode, duplicate ids).
+- **Fuzzing / property tests** on framing + parser boundaries (oversized messages, unicode, duplicate ids)—beyond what the current CLI `fuzz` subcommand does (see non-goals above).
 - **Server→client request** handling in the harness (today server-initiated JSON-RPC requests are largely ignored in v1 client mode).
 - **Published binaries** and a **GitHub Action** so adoption is `uses: …` instead of `cargo install`.
 
