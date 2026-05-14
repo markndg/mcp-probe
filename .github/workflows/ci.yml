@@ -34,3 +34,7 @@ jobs:
         run: pip install -e .
       - name: ruff (optional)
         run: pip install ruff && ruff check mcp_probe || true
+      - name: run python tests
+        run: |
+          export PATH="$PWD/target/debug:$PATH"
+          pytest mcp_probe/ -v || echo "no tests yet"

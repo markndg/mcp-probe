@@ -33,6 +33,7 @@ If you ship an MCP server, this is the kind of harness that catches regressions 
 | **Protocol version flag** | `--protocol-version` passed through `initialize` (default `2024-11-05`). |
 | **Rust library** | Embed `run_suite`, `McpStdioSession`, matchers, and JUnit rendering in your own tooling. |
 | **Python wrapper** | Subprocess bridge around the CLI—stdlib only at runtime. |
+| **SARIF reports** | `--sarif` on `run` and `conformance`; upload to GitHub Security tab via `github/codeql-action/upload-sarif`. |
 
 **Non-goals (today):** Streamable HTTP / SSE, server-initiated client requests, or a full formal verification of every MCP edge case. Experimental JSON-RPC-over-HTTP exists for local bring-up, but it is not yet parity-tested like stdio. The `mcp-probe fuzz` command is a **crash smoke** tool (randomised params and methods on a fixed suite step), not protocol-aware framing fuzzing. The project is intentionally narrow so it stays fast to adopt and hard to misuse.
 
@@ -49,6 +50,27 @@ cargo build --release
 ```
 
 Add `target/release` to your `PATH` (or invoke `target/release/mcp-probe` by absolute path in CI).
+
+## GitHub Security tab integration
+
+`mcp-probe` can emit [SARIF](https://sarifweb.azurewebsites.net/) alongside JUnit, letting failed conformance checks appear as **code scanning alerts** in your pull requests — in the same place as CVE findings and secret scanning.
+
+```yaml
+- name: Run mcp-probe conformance
+  run: |
+    mcp-probe conformance \
+      --command my-mcp-server \
+      --junit results/conformance.xml \
+      --sarif results/conformance.sarif
+
+- name: Upload results to GitHub Security tab
+  uses: github/codeql-action/upload-sarif@v3
+  if: always()
+  with:
+    sarif_file: results/conformance.sarif
+```
+
+Each failed scenario becomes a code scanning alert with the rule ID, failure message, and a link back to the suite file. Pass `--sarif` to `mcp-probe run` for custom suites in the same way.
 
 ### Python (optional)
 

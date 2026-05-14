@@ -30,6 +30,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/markndg/mcp-probe"
 Repository = "https://github.com/markndg/mcp-probe"
+"Bug Tracker" = "https://github.com/markndg/mcp-probe/issues"
 
 [project.optional-dependencies]
 dev = ["pytest>=7", "mypy>=1", "ruff>=0.4"]
