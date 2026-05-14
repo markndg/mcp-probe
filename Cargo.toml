@@ -1,8 +1,14 @@
 [workspace]
 resolver = "2"
-members = ["crates/mcp-check-core", "crates/mcp-check"]
+members = ["crates/mcp-probe-core", "crates/mcp-probe"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
+description = "Contract testing and conformance checks for MCP servers"
+repository = "https://github.com/markndg/mcp-probe"
+homepage = "https://github.com/markndg/mcp-probe"
+keywords = ["mcp", "testing", "cli", "conformance", "ai"]
+categories = ["command-line-utilities", "development-tools::testing"]
+readme = "README.md"

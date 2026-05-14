@@ -1,6 +1,6 @@
 //! Minimal TCP HTTP/1.1 fixture for [`McpHttpSession`] (handshake, session header, one RPC).
 
-use mcp_check_core::{ConnectOptions, HttpEndpoint, McpHttpSession, ServerSpec};
+use mcp_probe_core::{ConnectOptions, HttpEndpoint, McpHttpSession, ServerSpec};
 use serde_json::json;
 use std::collections::HashMap;
 use std::io::{Read, Write};

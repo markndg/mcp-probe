@@ -1,18 +1,21 @@
 [package]
-name = "mcp-check"
+name = "mcp-probe"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "CLI for MCP server testing and validation"
+description = "CLI for MCP server testing and validation (mcp-probe)"
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 [[bin]]
-name = "mcp-check"
+name = "mcp-probe"
 path = "src/main.rs"
 
 [dependencies]
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
-mcp-check-core = { path = "../mcp-check-core" }
+mcp-probe-core = { path = "../mcp-probe-core" }
 rand = "0.8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

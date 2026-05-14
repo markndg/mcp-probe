@@ -28,9 +28,9 @@ jobs:
         with:
           python-version: "3.12"
       - uses: dtolnay/rust-toolchain@stable
-      - name: build mcp-check CLI
-        run: cargo build -p mcp-check
+      - name: build mcp-probe CLI
+        run: cargo build -p mcp-probe
       - name: pip install python package
         run: pip install -e .
       - name: ruff (optional)
-        run: pip install ruff && ruff check mcp_check || true
+        run: pip install ruff && ruff check mcp_probe || true

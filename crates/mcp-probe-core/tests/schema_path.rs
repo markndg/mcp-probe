@@ -1,4 +1,4 @@
-use mcp_check_core::{run_suite, ConnectOptions, SuiteFile, SuiteResolution};
+use mcp_probe_core::{run_suite, ConnectOptions, SuiteFile, SuiteResolution};
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
@@ -6,8 +6,8 @@ use std::time::Duration;
 
 #[test]
 fn result_schema_path_resolves_relative_to_suite_directory() {
-    let exe = std::env::var_os("CARGO_BIN_EXE_mcp-check-fake-server")
-        .expect("cargo should set CARGO_BIN_EXE_mcp-check-fake-server for integration tests");
+    let exe = std::env::var_os("CARGO_BIN_EXE_mcp_probe_fake_server")
+        .expect("cargo should set CARGO_BIN_EXE_mcp_probe_fake_server for integration tests");
 
     let base = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/schema_path");
     let mut suite_value: serde_json::Value =
